@@ -44,7 +44,9 @@ function add_deps {
         for lib in $dep/lib/*.rlib
         do
             local dest=$(basename $lib .rlib)-$(crate_hash $dep).rlib
-            copy_or_link "$lib" "$dep_dir/$dest"
+            if [ "$(stat -c %N "$dep_dir/$dest")" != "'$dep_dir/$dest' -> '$lib'" ]; then
+                copy_or_link "$lib" "$dep_dir/$dest"
+            fi
         done
     done
 }
